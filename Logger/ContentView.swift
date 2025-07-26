@@ -12,6 +12,8 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [LogItem]
 
+    @State private var showAlert = false
+    
     var body: some View {
         NavigationSplitView {
             List {
@@ -34,16 +36,27 @@ struct ContentView: View {
                 }
 #endif
                 ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button("Show Alert") {
+                        showAlert = true
                     }
+//                    Button(action: addItem) {
+//                        Label("Add Item", systemImage: "plus")
+//                    }
                 }
             }
         } detail: {
             Text("Select an item")
-        }
+        }.alert(isPresented: $showAlert, content: { self.alertFunc() })
     }
 
+    func alertFunc() -> Alert {
+        Alert(
+            title: Text("test"),
+            message: Text("this is the message"),
+            dismissButton: .default(Text("Dismiss"))
+        )
+    }
+    
     private func addItem() {
         withAnimation {
             let newItem = LogItem(timestamp: Date(), note: "Hello World")
